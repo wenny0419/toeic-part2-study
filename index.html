@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <title>TOEIC Part 2 影音＋情境記憶複習系統</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-soft: #1e293b;
+      --card: #1e293b;
+      --card-2: #263348;
+      --border: #334155;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --pink: #ec4899;
+      --pink-soft: rgba(236, 72, 153, 0.16);
+      --pink-border: rgba(236, 72, 153, 0.45);
+      --blue: #38bdf8;
+      --green: #34d399;
+      --amber: #fbbf24;
+      --purple: #c084fc;
+      --red: #fb7185;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+    body.light {
+      --bg: #f1f5f9;
+      --bg-soft: #e2e8f0;
+      --card: #ffffff;
+      --card-2: #f8fafc;
+      --border: #cbd5e1;
+      --text: #0f172a;
+      --muted: #475569;
+      --pink: #db2777;
+      --pink-soft: rgba(219, 39, 119, 0.1);
+      --pink-border: rgba(219, 39, 119, 0.35);
+      --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Microsoft JhengHei", "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding-bottom: 146px;
+      line-height: 1.55;
+    }
+    button { font-family: inherit; cursor: pointer; }
+    a { color: var(--blue); text-decoration: none; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    body.light .topbar { background: rgba(255, 255, 255, 0.92); }
+    .container { max-width: 1320px; margin: 0 auto; padding: 0 16px; }
+    .header-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-icon {
+      width: 42px; height: 42px; border-radius: 12px;
+      background: linear-gradient(135deg, #3b82f6, #ec4899);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; color: #fff;
+      box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
+    }
+    .brand h1 { margin: 0; font-size: 1.15rem; font-weight: 800; }
+    .brand p { margin: 2px 0 0; font-size: 0.78rem; color: var(--muted); }
+
+    .controls-group { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .pill-btn {
+      border: 1px solid var(--border);
+      background: var(--card-2);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s ease;
+    }
+    .pill-btn:hover { border-color: var(--pink); }
+    .pill-btn.active { background: var(--pink); border-color: var(--pink); color: #fff; }
+    .pill-btn.blue.active { background: #0284c7; border-color: #0284c7; }
+
+    .tabs-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; scrollbar-width: none; }
+    .tab-btn {
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      white-space: nowrap;
+      transition: all 0.18s ease;
+    }
+    .tab-btn:hover { color: var(--text); background: var(--card-2); }
+    .tab-btn.active {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(236, 72, 153, 0.2));
+      border-color: var(--pink);
+      color: var(--text);
+    }
+
+    .toolbar {
+      margin: 16px 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 16px;
+      box-shadow: var(--shadow);
+    }
+    .search-box { flex: 1 1 240px; position: relative; display: flex; align-items: center; }
+    .search-box input {
+      width: 100%; background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); padding: 8px 14px 8px 34px; border-radius: 10px; font-size: 0.9rem; outline: none;
+    }
+    .search-box input:focus { border-color: var(--blue); }
+    .search-box span { position: absolute; left: 10px; color: var(--muted); }
+
+    .main-grid { display: grid; grid-template-columns: 315px 1fr; gap: 18px; align-items: start; }
+    @media (max-width: 960px) { .main-grid { grid-template-columns: 1fr; } }
+    .sidebar {
+      position: sticky; top: 128px;
+      display: flex; flex-direction: column; gap: 14px;
+      max-height: calc(100vh - 270px); overflow-y: auto;
+    }
+    @media (max-width: 960px) { .sidebar { position: static; max-height: none; } }
+    .panel {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 14px; box-shadow: var(--shadow);
+    }
+    .panel-title {
+      font-size: 0.92rem; font-weight: 800; margin: 0 0 10px;
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    }
+    .jump-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; }
+    .jump-btn {
+      border: 1px solid var(--border); background: var(--card-2); color: var(--text);
+      border-radius: 8px; padding: 5px 0; font-size: 0.78rem; font-weight: 700; text-align: center;
+    }
+    .jump-btn:hover { border-color: var(--blue); }
+    .jump-btn.active { background: var(--pink); border-color: var(--pink); color: #fff; }
+
+    .page-tabs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+    .page-tab {
+      font-size: 0.72rem; padding: 4px 7px; border-radius: 6px;
+      border: 1px solid var(--border); background: var(--card-2); color: var(--muted);
+    }
+    .page-tab.active { background: var(--blue); color: #0f172a; border-color: var(--blue); font-weight: 700; }
+    .book-thumb { width: 100%; border-radius: 10px; border: 1px solid var(--border); cursor: zoom-in; display: block; }
+
+    .point-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 18px; margin-bottom: 18px; box-shadow: var(--shadow);
+    }
+    .point-card.playing-card { border-color: var(--pink); box-shadow: 0 0 0 2px var(--pink-soft), var(--shadow); }
+    .point-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+    .point-title-wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+    .num-badge {
+      background: var(--pink); color: #fff; font-weight: 800; font-size: 0.88rem;
+      padding: 4px 10px; border-radius: 8px; font-family: Consolas, monospace;
+    }
+    .point-title { font-size: 1.12rem; font-weight: 800; margin: 0; }
+    .point-title-zh { font-size: 0.9rem; color: var(--muted); font-weight: 600; }
+    .rate-badge {
+      font-size: 0.78rem; font-weight: 800; padding: 4px 10px; border-radius: 999px;
+      background: rgba(16, 185, 129, 0.16); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+    .rate-badge.high { background: rgba(236, 72, 153, 0.18); color: #f472b6; border-color: rgba(236, 72, 153, 0.45); }
+    .rule-box {
+      background: var(--card-2); border-left: 4px solid var(--pink);
+      border-radius: 8px; padding: 10px 14px; font-size: 0.92rem; margin-bottom: 8px;
+    }
+    .tip-box {
+      background: rgba(56, 189, 248, 0.1); border-left: 4px solid var(--blue);
+      border-radius: 8px; padding: 8px 14px; font-size: 0.85rem; color: var(--muted); margin-bottom: 12px;
+    }
+    body.light .tip-box { color: #334155; }
+
+    /* Q&A Dialog Card */
+    .items-list { display: flex; flex-direction: column; gap: 10px; }
+    .qa-card {
+      display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: start;
+      padding: 12px 14px; border-radius: 14px; border: 1px solid var(--border);
+      background: var(--bg); transition: all 0.16s ease;
+    }
+    body.light .qa-card { background: #f8fafc; }
+    .qa-card:hover { border-color: var(--blue); transform: translateY(-1px); }
+    .qa-card.active-item {
+      background: var(--pink-soft); border-color: var(--pink); box-shadow: 0 0 0 1px var(--pink);
+    }
+    .qa-card.title-row { background: transparent; border-style: dashed; padding: 9px 14px; opacity: 0.9; }
+    .item-left { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .time-chip {
+      font-family: Consolas, monospace; font-size: 0.78rem; font-weight: 700;
+      padding: 4px 8px; border-radius: 7px; background: var(--card-2);
+      border: 1px solid var(--border); color: var(--blue);
+    }
+    .qa-card.active-item .time-chip { background: var(--pink); color: #fff; border-color: var(--pink); }
+    .emoji-box { font-size: 1.35rem; text-align: center; }
+    .qa-body { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+
+    .bubble {
+      padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--card-2);
+    }
+    .bubble.q { border-left: 4px solid var(--blue); }
+    .bubble.a { border-left: 4px solid var(--green); }
+    .bubble.wrong {
+      border-left: 4px solid var(--red); background: rgba(251, 113, 133, 0.1);
+      border-color: rgba(251, 113, 133, 0.35);
+    }
+    .qa-tag {
+      display: inline-block; font-size: 0.74rem; font-weight: 800; padding: 1px 6px;
+      border-radius: 5px; margin-right: 6px; font-family: Consolas, monospace;
+    }
+    .qa-tag.q { background: rgba(56, 189, 248, 0.18); color: var(--blue); }
+    .qa-tag.a { background: rgba(52, 211, 153, 0.18); color: var(--green); }
+    .qa-tag.w { background: rgba(251, 113, 133, 0.22); color: var(--red); }
+
+    .en-line { font-size: 1.02rem; font-weight: 600; word-break: break-word; }
+    .zh-line { font-size: 0.86rem; color: var(--muted); margin-top: 2px; transition: filter 0.18s; }
+    .note-line {
+      font-size: 0.82rem; color: #f472b6; background: rgba(236, 72, 153, 0.08);
+      padding: 5px 10px; border-radius: 8px; border: 1px dashed var(--pink-border);
+    }
+    body.light .note-line { color: #be185d; }
+    .kw { color: var(--pink); font-weight: 800; background: var(--pink-soft); padding: 0 4px; border-radius: 4px; }
+    .blank-kw {
+      display: inline-block; min-width: 78px; text-align: center;
+      border-bottom: 2px dashed var(--pink); background: rgba(236, 72, 153, 0.14);
+      color: transparent; border-radius: 4px; padding: 0 6px; cursor: pointer; user-select: none;
+    }
+    .blank-kw.revealed { color: var(--pink); font-weight: 800; }
+
+    /* Masks */
+    .masked-zh .zh-line { filter: blur(6px); user-select: none; cursor: pointer; }
+    .masked-zh .zh-line.revealed { filter: none; }
+    .masked-hideA .bubble.a,
+    .masked-hideA .bubble.wrong,
+    .masked-hideA .note-line { filter: blur(7px); user-select: none; cursor: pointer; }
+    .masked-hideA .bubble.a.revealed,
+    .masked-hideA .bubble.wrong.revealed,
+    .masked-hideA .note-line.revealed { filter: none; }
+    .masked-blind .qa-body .en-line,
+    .masked-blind .qa-body .zh-line,
+    .masked-blind .qa-body .note-line { filter: blur(8px); user-select: none; cursor: pointer; }
+    .masked-blind .qa-body.revealed .en-line,
+    .masked-blind .qa-body.revealed .zh-line,
+    .masked-blind .qa-body.revealed .note-line { filter: none; }
+
+    .meta-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 2px; }
+    .scene-tag {
+      font-size: 0.72rem; padding: 2px 8px; border-radius: 999px;
+      border: 1px solid var(--border); background: var(--card-2); color: var(--muted);
+    }
+    .item-actions { display: flex; flex-direction: column; gap: 6px; }
+    .icon-btn {
+      border: 1px solid var(--border); background: var(--card-2); color: var(--text);
+      border-radius: 8px; padding: 5px 9px; font-size: 0.82rem;
+    }
+    .icon-btn:hover { border-color: var(--pink); }
+    .icon-btn.active { background: var(--pink); border-color: var(--pink); color: #fff; }
+
+    /* Scenes */
+    .scene-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin-bottom: 18px; }
+    .scene-card-btn {
+      text-align: left; border: 1px solid var(--border); background: var(--card); color: var(--text);
+      padding: 14px; border-radius: 14px; transition: all 0.18s; box-shadow: var(--shadow);
+    }
+    .scene-card-btn:hover { border-color: var(--blue); transform: translateY(-2px); }
+    .scene-card-btn.active { border-color: var(--pink); box-shadow: 0 0 0 2px var(--pink-soft), var(--shadow); }
+    .scene-hero { display: grid; grid-template-columns: 1.15fr 1fr; gap: 18px; margin-bottom: 20px; }
+    @media (max-width: 960px) { .scene-hero { grid-template-columns: 1fr; } }
+    .svg-stage, .story-box {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 16px; box-shadow: var(--shadow);
+    }
+    .svg-stage svg { width: 100%; height: auto; display: block; border-radius: 12px; }
+    .hotspot-node { cursor: pointer; }
+    .hotspot-node:hover { opacity: 0.88; }
+    .story-seg { display: inline; cursor: pointer; border-radius: 5px; padding: 1px 2px; }
+    .story-seg:hover { background: var(--pink-soft); color: var(--pink); text-decoration: underline; }
+
+    /* Comparisons */
+    .comp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; margin-bottom: 22px; }
+    .comp-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; box-shadow: var(--shadow); }
+    .ab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+    @media (max-width: 540px) { .ab-grid { grid-template-columns: 1fr; } }
+    .ab-box { border: 1px solid var(--border); background: var(--bg); border-radius: 10px; padding: 10px; }
+    body.light .ab-box { background: #f8fafc; }
+    .ab-box.ok { border-color: rgba(52, 211, 153, 0.45); }
+    .ab-box.no { border-color: rgba(251, 113, 133, 0.45); }
+    table.data-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    table.data-table th, table.data-table td { border-bottom: 1px solid var(--border); padding: 10px 8px; text-align: left; }
+    table.data-table th { color: var(--muted); font-size: 0.8rem; }
+
+    /* Quiz */
+    .quiz-box {
+      max-width: 780px; margin: 0 auto; background: var(--card);
+      border: 1px solid var(--border); border-radius: 18px; padding: 24px; box-shadow: var(--shadow);
+    }
+    .quiz-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+    @media (max-width: 640px) { .quiz-options { grid-template-columns: 1fr; } }
+    .quiz-opt {
+      text-align: left; padding: 14px; border-radius: 12px;
+      border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 0.94rem;
+    }
+    body.light .quiz-opt { background: #f8fafc; }
+    .quiz-opt:hover { border-color: var(--blue); }
+    .quiz-opt.correct { border-color: var(--green); background: rgba(52, 211, 153, 0.16); }
+    .quiz-opt.wrong { border-color: var(--red); background: rgba(251, 113, 133, 0.16); }
+
+    /* Sticky Bottom Player */
+    .player-bar {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+      background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(14px);
+      border-top: 1px solid var(--border); padding: 10px 16px 12px;
+      box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.45);
+    }
+    body.light .player-bar { background: rgba(255, 255, 255, 0.96); }
+    .live-sub {
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+      margin-bottom: 8px; padding: 6px 12px; border-radius: 10px;
+      background: var(--card-2); border: 1px solid var(--border);
+    }
+    .player-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+    .play-main {
+      background: linear-gradient(135deg, #3b82f6, #ec4899);
+      color: #fff; border: none; border-radius: 999px; padding: 8px 18px; font-weight: 800; font-size: 0.9rem;
+    }
+    .seek-wrap { flex: 1 1 220px; display: flex; align-items: center; gap: 10px; }
+    .seek-wrap input[type="range"] { flex: 1; accent-color: var(--pink); }
+
+    .lightbox {
+      position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.86);
+      display: none; align-items: center; justify-content: center; padding: 20px;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 95vw; max-height: 92vh; border-radius: 10px; }
+    .hidden { display: none !important; }
+
+    .secret-gate {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(18px);
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .secret-card {
+      width: 100%; max-width: 420px; background: var(--card);
+      border: 1px solid var(--pink-border); border-radius: 20px;
+      padding: 28px 24px; text-align: center; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+    }
+    .secret-card input {
+      width: 100%; margin: 14px 0 10px; padding: 11px 14px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--bg); color: var(--text);
+      font-size: 1rem; text-align: center; outline: none;
+    }
+  </style>
+</head>
+<body>
+
+<div id="secretGate" class="secret-gate hidden">
+  <div class="secret-card">
+    <div style="font-size:2.4rem;margin-bottom:6px;">🔒</div>
+    <h2 style="margin:0 0 6px;font-size:1.25rem;">私密學習空間（Part 2）</h2>
+    <p style="margin:0;font-size:0.88rem;color:var(--muted);">此多益 Part 2 影音情境筆記僅限親友私下分享，請輸入通行碼，或使用完整私密連結開啟。</p>
+    <input id="secretInput" type="password" placeholder="輸入通行碼..." onkeydown="if(event.key==='Enter')submitSecretKey()" />
+    <button class="play-main" style="width:100%;padding:11px 18px;font-size:0.98rem;" onclick="submitSecretKey()">🔓 解鎖進入</button>
+    <div id="secretErr" style="color:var(--red);font-size:0.84rem;margin-top:10px;min-height:1.2em;"></div>
+  </div>
+</div>
+
+<header class="topbar">
+  <div class="container">
+    <div class="header-row">
+      <div class="brand">
+        <div class="brand-icon">💬</div>
+        <div>
+          <h1>TOEIC Part 2 影音＋情境記憶複習系統</h1>
+          <p>001–034 應答秒殺公式 × 14:48 原音同步 × 6 大職場對話情境</p>
+        </div>
+      </div>
+
+      <div class="controls-group">
+        <a class="pill-btn" href="https://wenny0419.github.io/toeic-part1-study/?key=toeic990" target="_blank">⇄ 切換 Part 1</a>
+        <button class="pill-btn active" data-mask="none" onclick="setMaskMode('none')">👁️ 顯示全部</button>
+        <button class="pill-btn" data-mask="zh" onclick="setMaskMode('zh')">🙈 遮住中文</button>
+        <button class="pill-btn" data-mask="hideA" onclick="setMaskMode('hideA')">💬 遮住回答 A</button>
+        <button class="pill-btn" data-mask="blind" onclick="setMaskMode('blind')">🎧 考場全盲</button>
+        <button class="pill-btn" id="shareBtn" onclick="copyShareLink()">🔗 複製私密網址</button>
+        <button class="pill-btn blue" id="themeBtn" onclick="toggleTheme()">☀️ 淺色</button>
+      </div>
+    </div>
+
+    <div class="tabs-row">
+      <button class="tab-btn active" data-tab="sync" onclick="switchTab('sync')">🎧 001–034 應答同步精讀</button>
+      <button class="tab-btn" data-tab="scenes" onclick="switchTab('scenes')">🗺️ 6 大職場對話情境劇場</button>
+      <button class="tab-btn" data-tab="compare" onclick="switchTab('compare')">⚡ 聽力陷阱＆萬用秒殺公式</button>
+      <button class="tab-btn" data-tab="quiz" onclick="switchTab('quiz')">🎯 考場盲聽應答實戰測驗</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <!-- TAB 1 -->
+  <section id="tab-sync">
+    <div class="toolbar">
+      <div class="search-box">
+        <span>🔍</span>
+        <input id="searchInput" type="text" placeholder="搜尋關鍵字、對話、中文（例：budget, check, 便當, instead, 90%）..." oninput="renderPoints()" />
+      </div>
+      <div class="controls-group">
+        <button class="pill-btn active" data-filter="all" onclick="setFilter('all')">全部 (34)</button>
+        <button class="pill-btn" data-filter="90" onclick="setFilter('90')">🔥 90% 秒殺/陷阱</button>
+        <button class="pill-btn" data-filter="80" onclick="setFilter('80')">⭐ 80–85% 高頻</button>
+        <button class="pill-btn" data-filter="75" onclick="setFilter('75')">💡 推理/疑問句</button>
+        <button class="pill-btn" data-filter="trap" onclick="setFilter('trap')">⚠️ 必防陷阱</button>
+      </div>
+    </div>
+
+    <div class="main-grid">
+      <aside class="sidebar">
+        <div class="panel">
+          <div class="panel-title">
+            <span>📌 001–034 快速跳轉</span>
+            <span id="progressCount" style="font-size:0.75rem;color:var(--green);">已熟記 0/34</span>
+          </div>
+          <div id="jumpGrid" class="jump-grid"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title"><span>📖 原書講義對照（點擊放大）</span></div>
+          <div id="pageTabs" class="page-tabs"></div>
+          <img id="bookPreviewImg" class="book-thumb" src="images/page1_001_003.jpg" alt="原書講義掃描" onclick="openLightbox(this.src)" />
+        </div>
+      </aside>
+
+      <div id="pointsContainer"></div>
+    </div>
+  </section>
+
+  <!-- TAB 2 -->
+  <section id="tab-scenes" class="hidden">
+    <div style="margin-top:16px;" class="scene-cards-grid" id="sceneSelectorGrid"></div>
+    <div id="sceneStageArea"></div>
+  </section>
+
+  <!-- TAB 3 -->
+  <section id="tab-compare" class="hidden">
+    <div style="margin-top:16px;">
+      <h2 style="margin:0 0 12px;font-size:1.15rem;">⚡ Part 2 必殺陷阱淘汰法 vs 萬用秒殺公式對比</h2>
+      <div id="compCardsGrid" class="comp-grid"></div>
+
+      <div class="panel">
+        <div class="panel-title">
+          <span>🔥 聽到即高機率正解的「黃金訊號詞」速查表（點擊秒聽原音）</span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="data-table" id="goldenKeywordsTable"></table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 4 -->
+  <section id="tab-quiz" class="hidden" style="margin-top:18px;">
+    <div class="quiz-box">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;">
+        <div>
+          <h2 style="margin:0;font-size:1.2rem;">🎯 考場盲聽應答實戰測驗</h2>
+          <p style="margin:4px 0 0;font-size:0.85rem;color:var(--muted);">播放 `06.mp3` 原音，測驗你能否聽出對應回答或秒殺關鍵詞！</p>
+        </div>
+        <div class="controls-group">
+          <span class="rate-badge" id="quizScoreBadge">得分 0 / 0</span>
+          <button class="pill-btn active" onclick="nextQuizQuestion()">🎲 下一題</button>
+        </div>
+      </div>
+
+      <div class="controls-group" style="margin-bottom:14px;">
+        <button class="pill-btn active" id="qModeResp" onclick="setQuizMode('resp')">💬 聽問答選中文情境</button>
+        <button class="pill-btn" id="qModeKw" onclick="setQuizMode('keyword')">✏️ 聽音選出秒殺關鍵字</button>
+      </div>
+
+      <div id="quizArena"></div>
+    </div>
+
+    <div class="panel" style="max-width:780px;margin:18px auto 0;">
+      <div class="panel-title">
+        <span>📌 我的難題標記清單</span>
+        <button class="pill-btn" onclick="clearBookmarks()">清除標記</button>
+      </div>
+      <div id="bookmarksContainer"></div>
+    </div>
+  </section>
+</main>
+
+<div class="player-bar">
+  <div class="container">
+    <div class="live-sub">
+      <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1;">
+        <span id="liveEmoji" style="font-size:1.45rem;">🎧</span>
+        <div style="min-width:0;flex:1;">
+          <div id="liveQ" style="font-weight:800;font-size:0.93rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">準備就緒 — 點擊任意 Q&A 對話或按下播放開始同步複習</div>
+          <div id="liveA" style="font-size:0.84rem;color:var(--green);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">快捷鍵：空白鍵 播放/暫停 ｜ ← / → 上/下一題 ｜ L 單題循環 ｜ R 重播本題</div>
+        </div>
+      </div>
+      <span id="livePointBadge" class="num-badge" style="font-size:0.76rem;">READY</span>
+    </div>
+
+    <div class="player-controls">
+      <button class="pill-btn" onclick="stepItem(-1)">⏮ 上一題</button>
+      <button class="play-main" id="playPauseBtn" onclick="togglePlay()">▶ 播放</button>
+      <button class="pill-btn" onclick="stepItem(1)">下一題 ⏭</button>
+      <button class="pill-btn" id="loopBtn" onclick="toggleLoopCurrent()">🔁 單題循環：關</button>
+      <button class="pill-btn active" id="autoScrollBtn" onclick="toggleAutoScroll()">📜 自動跟隨：開</button>
+
+      <div class="seek-wrap">
+        <span id="currTimeText" style="font-family:Consolas,monospace;font-size:0.8rem;">00:00</span>
+        <input id="seekSlider" type="range" min="0" max="888.67" step="0.1" value="0" oninput="onSeek(this.value)" />
+        <span id="durTimeText" style="font-family:Consolas,monospace;font-size:0.8rem;">14:48</span>
+      </div>
+
+      <div class="controls-group">
+        <button class="pill-btn" data-speed="0.75" onclick="setSpeed(0.75)">0.75x</button>
+        <button class="pill-btn active" data-speed="1" onclick="setSpeed(1)">1.0x</button>
+        <button class="pill-btn" data-speed="1.25" onclick="setSpeed(1.25)">1.25x</button>
+        <button class="pill-btn" data-speed="1.5" onclick="setSpeed(1.5)">1.5x</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')">
+  <img id="lightboxImg" src="" alt="放大講義" />
+</div>
+
+<audio id="audio" src="06.mp3" preload="auto"></audio>
+<script src="data.js"></script>
+<script>
+const DATA = window.TOEIC_P2_DATA;
+const audio = document.getElementById('audio');
+
+let state = {
+  tab: 'sync',
+  maskMode: 'none',
+  filter: 'all',
+  activeScene: 'meeting',
+  activeItemId: null,
+  loopRange: null,
+  autoScroll: true,
+  quizMode: 'resp',
+  quizScore: 0,
+  quizTotal: 0,
+  currentQuiz: null,
+  bookmarks: JSON.parse(localStorage.getItem('toeic_p2_bookmarks') || '[]'),
+  mastered: JSON.parse(localStorage.getItem('toeic_p2_mastered') || '[]')
+};
+
+const PAGES = [
+  { label: 'P.1 (001–003)', src: 'images/page1_001_003.jpg' },
+  { label: 'P.2 (003–007)', src: 'images/page2_004_007.jpg' },
+  { label: 'P.3 (007–012)', src: 'images/page3_008_012.jpg' },
+  { label: 'P.4 (012–016)', src: 'images/page4_013_016.jpg' },
+  { label: 'P.5 (016–020)', src: 'images/page5_017_020.jpg' },
+  { label: 'P.6 (020–026)', src: 'images/page6_021_026.jpg' },
+  { label: 'P.7 (026–032)', src: 'images/page7_027_032.jpg' },
+  { label: 'P.8 (032–034)', src: 'images/page8_033_034.jpg' }
+];
+
+const SCENE_SVGS = {
+  meeting: `
+    <svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg">
+      <rect width="640" height="360" rx="14" fill="#0f172a"/>
+      <rect x="16" y="16" width="608" height="328" rx="10" fill="#1e293b" stroke="#3b82f6" stroke-width="2"/>
+      <g class="hotspot-node" onclick="playRange(57.5,65,'003-5')">
+        <rect x="30" y="34" width="280" height="140" rx="10" fill="#1d4ed8" opacity="0.3" stroke="#60a5fa"/>
+        <text x="170" y="64" fill="#dbeafe" font-size="14" font-weight="bold" text-anchor="middle">📅 會議改期與行程確認</text>
+        <text x="170" y="92" fill="#bfdbfe" font-size="12" text-anchor="middle">postponed → now on Friday (00:57)</text>
+        <text x="170" y="116" fill="#bfdbfe" font-size="12" text-anchor="middle">do it tomorrow instead (01:30)</text>
+        <text x="170" y="140" fill="#fde047" font-size="12" text-anchor="middle">Let me check my schedule (02:53)</text>
+      </g>
+      <g class="hotspot-node" onclick="playRange(694.5,703.8,'026-3')">
+        <rect x="330" y="34" width="280" height="140" rx="10" fill="#0f766e" opacity="0.32" stroke="#2dd4bf"/>
+        <text x="470" y="64" fill="#ccfbf1" font-size="14" font-weight="bold" text-anchor="middle">🚪 會議室預約與人數</text>
+        <text x="470" y="92" fill="#99f6e4" font-size="12" text-anchor="middle">Okay, we'll be leaving shortly (11:34)</text>
+        <text x="470" y="116" fill="#99f6e4" font-size="12" text-anchor="middle">Only 7 women enrolled (09:32)</text>
+        <text x="470" y="140" fill="#fde047" font-size="12" text-anchor="middle">wait until David comes (13:40)</text>
+      </g>
+      <g class="hotspot-node" onclick="playRange(535,542.2,'020-1')">
+        <rect x="30" y="190" width="280" height="134" rx="10" fill="#9d174d" opacity="0.3" stroke="#f472b6"/>
+        <text x="170" y="220" fill="#fce7f3" font-size="14" font-weight="bold" text-anchor="middle">⏳ 專案進度與截止日</text>
+        <text x="170" y="246" fill="#fbcfe8" font-size="12" text-anchor="middle">Not until tomorrow 5:00 p.m. (08:55)</text>
+        <text x="170" y="270" fill="#fbcfe8" font-size="12" text-anchor="middle">Oh, taking longer than thought (11:26)</text>
+        <text x="170" y="294" fill="#fde047" font-size="12" text-anchor="middle">sent us a draft to check (03:00)</text>
+      </g>
+      <g class="hotspot-node" onclick="playRange(370,386.8,'015-1')">
+        <rect x="330" y="190" width="280" height="134" rx="10" fill="#4338ca" opacity="0.3" stroke="#818cf8"/>
+        <text x="470" y="220" fill="#e0e7ff" font-size="14" font-weight="bold" text-anchor="middle">📊 報告份數與簡報審閱</text>
+        <text x="470" y="246" fill="#c7d2fe" font-size="12" text-anchor="middle">Mary's joining us too (06:10)</text>
+        <text x="470" y="270" fill="#c7d2fe" font-size="12" text-anchor="middle">Every one has a laptop (06:17)</text>
+        <text x="470" y="294" fill="#fde047" font-size="12" text-anchor="middle">Sure, I'd be glad to. (08:40)</text>
+      </g>
+    </svg>`,
+  task: `
+    <svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg">
+      <rect width="640" height="360" rx="14" fill="#0f172a"/>
+      <rect x="16" y="16" width="608" height="328" rx="10" fill="#1e293b" stroke="#eab308" stroke-width="2"/>
+      <g class="hotspot-node" onclick="playRange(106.5,113.5,'005-1')">
+        <rect x="30" y="34" width="280" height="140" rx="10" fill="#a16207" opacity="0.34" stroke="#facc15"/>
+        <text x="170" y="64" fill="#fef9c3" font-size="14" font-weight="bold" text-anchor="middle">🖨️ 影印機與設備故障</text>
+        <text x="170" y="92" fill="#fef08a" font-size="12" text-anchor="middle">Our copy machine is broken (01:46)</text>
+        <text x="170" y="116" fill="#fef08a" font-size="12" text-anchor="middle">The one near Ms. Lee's desk (04:55)</text>
+        <text x="170" y="140" fill="#fde047" font-size="12" text-anchor="middle">fix copier → I'd be happy to. (08:18)</text>
+      </g>
+      <g class="hotspot-node" onclick="playRange(483,498,'018-2')">
+        <rect x="330" y="34" width="280" height="140" rx="10" fill="#1d4ed8" opacity="0.3" stroke="#60a5fa"/>
+        <text x="470" y="64" fill="#dbeafe" font-size="14" font-weight="bold" text-anchor="middle">🧑‍💼 權責分工＆人名負責</text>
+        <text x="470" y="92" fill="#bfdbfe" font-size="12" text-anchor="middle">Danaka will send guidelines (08:03)</text>
+        <text x="470" y="116" fill="#bfdbfe" font-size="12" text-anchor="middle">Tina takes care of that (08:11)</text>
+        <text x="470" y="140" fill="#fde047" font-size="12" text-anchor="middle">It's Tina's turn. / Jay & Sue</text>
+      </g>
+      <g class="hotspot-node" onclick="playRange(649,656.5,'025-1')">
+        <rect x="30" y="190" width="280" height="134" rx="10" fill="#9f1239" opacity="0.3" stroke="#fb7185"/>
+        <text x="170" y="220" fill="#ffe4e6" font-size="14" font-weight="bold" text-anchor="middle">💻 技術問題與軟體操作</text>
+        <text x="170" y="246" fill="#fecdd3" font-size="12" text-anchor="middle">We had technical problems (10:49)</text>
+        <text x="170" y="270" fill="#fecdd3" font-size="12" text-anchor="middle">forklift → I've never used it (07:48)</text>
+        <text x="170" y="294" fill="#fde047" font-size="12" text-anchor="middle">You're the computer expert (14:40)</text>
+      </g>
+      <g class="hotspot-node" onclick="playRange(167.5,173,'007-1')">
+        <rect x="330" y="190" width="280" height="134" rx="10" fill="#15803d" opacity="0.3" stroke="#4ade80"/>
+        <text x="470" y="220" fill="#dcfce7" font-size="14" font-weight="bold" text-anchor="middle">📘 備忘錄、手冊與待辦</text>
+        <text x="470" y="246" fill="#bbf7d0" font-size="12" text-anchor="middle">Check Darren's desk (02:47)</text>
+        <text x="470" y="270" fill="#bbf7d0" font-size="12" text-anchor="middle">put it on my list / in handbook</text>
+        <text x="470" y="294" fill="#fde047" font-size="12" text-anchor="middle">OK, I'll take care of that (10:12)</text>
+      </g>
+    </svg>`,
+  hr: `
+    <svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg">
+      <rect width="640" height="360" rx="14" fill="#0f172a"/>
+      <rect x="16" y="16" width="608" height="328" rx="10" fill="#1e293b" stroke="#a855f7" stroke-width="2"/>
+      <g class="hotspot-node" onclick="playRange(420.8,446,'016-1')">
+        <rect x="30" y="34" width="280" height="140" rx="10" fill="#7e22ce" opacity="0.32" stroke="#c084fc"/>
+        <text x="170" y="64" fill="#f3e8ff" font-size="14" font-weight="bold" text-anchor="middle">💰 Budget 預算秒殺區 (90%)</text>
+        <text x="170" y="92" fill="#e9d5ff" font-size="12" text-anchor="middle">because of the budget cut (07:00)</text>
+        <text x="170" y="116" fill="#e9d5ff" font-size="12" text-anchor="middle">finish the budget first (07:08)</text>
+        <text x="170" y="140" fill="#fde047" font-size="12" text-anchor="middle">The budget is quite small now (07:17)</text>
+      </g>
+      <g class="hotspot-node" onclick="playRange(446,461.5,'017-1')">
+        <rect x="330" y="34" width="280" height="140" rx="10" fill="#be185d" opacity="0.3" stroke="#f472b6"/>
+        <text x="470" y="64" fill="#fce7f3" font-size="14" font-weight="bold" text-anchor="middle">😔 招募職缺與離職 (90%)</text>
+        <text x="470" y="92" fill="#fbcfe8" font-size="12" text-anchor="middle">No, it was already filled (07:26)</text>
+        <text x="470" y="116" fill="#fbcfe8" font-size="12" text-anchor="middle">She no longer works here (07:35)</text>
+        <text x="470" y="140" fill="#fde047" font-size="12" text-anchor="middle">just graduated / Let's start looking</text>
+      </g>
+      <g class="hotspot-node" onclick="playRange(255.5,263.8,'010-1')">
+        <rect x="30" y="190" width="280" height="134" rx="10" fill="#0369a1" opacity="0.3" stroke="#38bdf8"/>
+        <text x="170" y="220" fill="#e0f2fe" font-size="14" font-weight="bold" text-anchor="middle">🎓 研討會與講座</text>
+        <text x="170" y="246" fill="#bae6fd" font-size="12" text-anchor="middle">Oh, didn't know it was required (04:16)</text>
+        <text x="170" y="270" fill="#bae6fd" font-size="12" text-anchor="middle">just for HR Dept / not giving lecture</text>
+        <text x="170" y="294" fill="#fde047" font-size="12" text-anchor="middle">workshop very informative (00:35)</text>
+      </g>
+      <g class="hotspot-node" onclick="playRange(857.5,865.2,'034-1')">
+        <rect x="330" y="190" width="280" height="134" rx="10" fill="#0f766e" opacity="0.3" stroke="#2dd4bf"/>
+        <text x="470" y="220" fill="#ccfbf1" font-size="14" font-weight="bold" text-anchor="middle">🪪 行政與人事狀態</text>
+        <text x="470" y="246" fill="#99f6e4" font-size="12" text-anchor="middle">The manager has them (14:18)</text>
+        <text x="470" y="270" fill="#99f6e4" font-size="12" text-anchor="middle">That hasn't been decided yet (02:24)</text>
+        <text x="470" y="294" fill="#fde047" font-size="12" text-anchor="middle">won't know until April (09:02)</text>
+      </g>
+    </svg>`,
+  client: `
+    <svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg">
+      <rect width="640" height="360" rx="14" fill="#0f172a"/>
+      <rect x="16" y="16" width="608" height="328" rx="10" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+      <g class="hotspot-node" onclick="playRange(13.5,20,'001-2')">
+        <rect x="30" y="34" width="280" height="140" rx="10" fill="#065f46" opacity="0.4" stroke="#34d399"/>
+        <text x="170" y="64" fill="#d1fae5" font-size="14" font-weight="bold" text-anchor="middle">✈️📦 物流配送與選擇問句</text>
+        <text x="170" y="92" fill="#a7f3d0" font-size="12" text-anchor="middle">Express air, please (00:13)</text>
+        <text x="170" y="116" fill="#a7f3d0" font-size="12" text-anchor="middle">Weren't you going to phone them? (01:59)</text>
+        <text x="170" y="140" fill="#fde047" font-size="12" text-anchor="middle">Sorry, I'm very busy (10:33)</text>
+      </g>
+      <g class="hotspot-node" onclick="playRange(386.8,415.5,'015-3')">
+        <rect x="330" y="34" width="280" height="140" rx="10" fill="#1d4ed8" opacity="0.3" stroke="#60a5fa"/>
+        <text x="470" y="64" fill="#dbeafe" font-size="14" font-weight="bold" text-anchor="middle">🛍️ 採購折扣與客戶應對</text>
+        <text x="470" y="92" fill="#bfdbfe" font-size="12" text-anchor="middle">There may be a discount (06:26)</text>
+        <text x="470" y="116" fill="#bfdbfe" font-size="12" text-anchor="middle">supplier went out of business (07:41)</text>
+        <text x="470" y="140" fill="#fde047" font-size="12" text-anchor="middle">client can be demanding (06:47)</text>
+      </g>
+      <g class="hotspot-node" onclick="playRange(730.5,744.2,'027-2')">
+        <rect x="30" y="190" width="280" height="134" rx="10" fill="#a16207" opacity="0.34" stroke="#facc15"/>
+        <text x="170" y="220" fill="#fef9c3" font-size="14" font-weight="bold" text-anchor="middle">🚆🚗 商務出差與汽車服務</text>
+        <text x="170" y="246" fill="#fef08a" font-size="12" text-anchor="middle">train was delayed / Nomo arranging</text>
+        <text x="170" y="270" fill="#fef08a" font-size="12" text-anchor="middle">still have one more year (12:17)</text>
+        <text x="170" y="294" fill="#fde047" font-size="12" text-anchor="middle">Wow, that's really expensive (11:44)</text>
+      </g>
+      <g class="hotspot-node" onclick="playRange(301.5,309,'012-1')">
+        <rect x="330" y="190" width="280" height="134" rx="10" fill="#9d174d" opacity="0.3" stroke="#f472b6"/>
+        <text x="470" y="220" fill="#fce7f3" font-size="14" font-weight="bold" text-anchor="middle">🧾 帳單、報銷與詢問</text>
+        <text x="470" y="246" fill="#fbcfe8" font-size="12" text-anchor="middle">Hasn't the payment arrived yet? (05:01)</text>
+        <text x="470" y="270" fill="#fbcfe8" font-size="12" text-anchor="middle">That's Darren's job (14:10)</text>
+        <text x="470" y="294" fill="#fde047" font-size="12" text-anchor="middle">Let me ask my manager (13:06)</text>
+      </g>
+    </svg>`,
+  social: `
+    <svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg">
+      <rect width="640" height="360" rx="14" fill="#0f172a"/>
+      <rect x="16" y="16" width="608" height="328" rx="10" fill="#1e293b" stroke="#f97316" stroke-width="2"/>
+      <g class="hotspot-node" onclick="playRange(330,354,'013-1')">
+        <rect x="30" y="34" width="280" height="140" rx="10" fill="#ea580c" opacity="0.3" stroke="#fb923c"/>
+        <text x="170" y="64" fill="#ffedd5" font-size="14" font-weight="bold" text-anchor="middle">🍱 省錢帶便當族 (80%)</text>
+        <text x="170" y="92" fill="#fed7aa" font-size="12" text-anchor="middle">always bring food from home (05:39)</text>
+        <text x="170" y="116" fill="#fed7aa" font-size="12" text-anchor="middle">brought something from home (05:46)</text>
+        <text x="170" y="140" fill="#fde047" font-size="12" text-anchor="middle">mow the lawn at my house (05:30)</text>
+      </g>
+      <g class="hotspot-node" onclick="playRange(475.5,483,'018-1')">
+        <rect x="330" y="34" width="280" height="140" rx="10" fill="#be185d" opacity="0.28" stroke="#f472b6"/>
+        <text x="470" y="64" fill="#fce7f3" font-size="14" font-weight="bold" text-anchor="middle">🍽️ 餐廳點餐＆第三選擇</text>
+        <text x="470" y="92" fill="#fbcfe8" font-size="12" text-anchor="middle">coffee/tea → Isn't there any juice? (07:55)</text>
+        <text x="470" y="116" fill="#fbcfe8" font-size="12" text-anchor="middle">Ask the waitress to heat it up (12:58)</text>
+        <text x="470" y="140" fill="#fde047" font-size="12" text-anchor="middle">reserved for birthday / huge group</text>
+      </g>
+      <g class="hotspot-node" onclick="playRange(624.2,633.5,'024-1')">
+        <rect x="30" y="190" width="280" height="134" rx="10" fill="#9f1239" opacity="0.3" stroke="#fb7185"/>
+        <text x="170" y="220" fill="#ffe4e6" font-size="14" font-weight="bold" text-anchor="middle">🙇 聚餐婉拒與取消</text>
+        <text x="170" y="246" fill="#fecdd3" font-size="12" text-anchor="middle">Sorry, have other work to do (10:24)</text>
+        <text x="170" y="270" fill="#fecdd3" font-size="12" text-anchor="middle">dinner → It was cancelled (10:56)</text>
+        <text x="170" y="294" fill="#fde047" font-size="12" text-anchor="middle">party → few people wanted (04:08)</text>
+      </g>
+      <g class="hotspot-node" onclick="playRange(865.2,873.2,'034-2')">
+        <rect x="330" y="190" width="280" height="134" rx="10" fill="#1d4ed8" opacity="0.28" stroke="#60a5fa"/>
+        <text x="470" y="220" fill="#dbeafe" font-size="14" font-weight="bold" text-anchor="middle">🎬🎫 休閒娛樂與日常</text>
+        <text x="470" y="246" fill="#bfdbfe" font-size="12" text-anchor="middle">King Kong → see something else (14:25)</text>
+        <text x="470" y="270" fill="#bfdbfe" font-size="12" text-anchor="middle">tickets gone → Did you try online? (05:15)</text>
+        <text x="470" y="294" fill="#fde047" font-size="12" text-anchor="middle">give me a lift → in 15 min (00:43)</text>
+      </g>
+    </svg>`,
+  trap: `
+    <svg viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg">
+      <rect width="640" height="360" rx="14" fill="#0f172a"/>
+      <rect x="16" y="16" width="608" height="328" rx="10" fill="#1e293b" stroke="#ec4899" stroke-width="2"/>
+      <g class="hotspot-node" onclick="playRange(3,13.5,'001-1')">
+        <rect x="30" y="34" width="280" height="140" rx="10" fill="#be185d" opacity="0.32" stroke="#f472b6"/>
+        <text x="170" y="64" fill="#fce7f3" font-size="14" font-weight="bold" text-anchor="middle">⚠️ 兩大 90% 必殺刪除陷阱</text>
+        <text x="170" y="92" fill="#fbcfe8" font-size="12" text-anchor="middle">音近重複: cancel vs can't sell (00:03)</text>
+        <text x="170" y="116" fill="#fbcfe8" font-size="12" text-anchor="middle">反義錯覺: right away vs left bike (12:31)</text>
+        <text x="170" y="140" fill="#fde047" font-size="12" text-anchor="middle">例外: or / which 選擇問句可重複</text>
+      </g>
+      <g class="hotspot-node" onclick="playRange(20,28,'002-1')">
+        <rect x="330" y="34" width="280" height="140" rx="10" fill="#4338ca" opacity="0.32" stroke="#818cf8"/>
+        <text x="470" y="64" fill="#e0e7ff" font-size="14" font-weight="bold" text-anchor="middle">🧠 問句語意與禮貌陷阱</text>
+        <text x="470" y="94" fill="#c7d2fe" font-size="12" text-anchor="middle">Do you know where...? 別回 Yes (00:20)</text>
+        <text x="470" y="120" fill="#c7d2fe" font-size="12" text-anchor="middle">Would/Do you mind...? 回 Sure/OK (10:05)</text>
+        <text x="470" y="146" fill="#c7d2fe" font-size="12" text-anchor="middle">Didn't/Needs fixing? 常否定作答 (04:24)</text>
+      </g>
+      <g class="hotspot-node" onclick="playRange(65,167.5,'004-h')">
+        <rect x="30" y="190" width="580" height="134" rx="10" fill="#0f766e" opacity="0.32" stroke="#2dd4bf"/>
+        <text x="320" y="222" fill="#ccfbf1" font-size="15" font-weight="bold" text-anchor="middle">🔥 90% 萬用秒殺訊號詞 (點擊連聽)</text>
+        <text x="320" y="252" fill="#99f6e4" font-size="13" text-anchor="middle">but / instead / though (01:05) ・ I'm not sure / hasn't been decided yet (02:07) ・ Let me check (02:38)</text>
+        <text x="320" y="284" fill="#fde047" font-size="13" text-anchor="middle">Why → Because (03:52) ・ budget (06:55) ・ problem / cancelled (10:41) ・ I'd be happy to (08:18)</text>
+      </g>
+    </svg>`
+};
+
+function fmtTime(sec) {
+  const s = Math.max(0, Math.floor(sec || 0));
+  return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+}
+
+function formatEnHtml(enText, isMaskKw) {
+  const esc = (enText || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return esc.replace(/\*\*(.+?)\*\*/g, (_, word) => {
+    if (isMaskKw) {
+      return `<span class="blank-kw" onclick="event.stopPropagation();this.classList.toggle('revealed')">${word}</span>`;
+    }
+    return `<span class="kw">${word}</span>`;
+  });
+}
+
+function getSceneObj(id) {
+  return DATA.scenes.find(s => s.id === id) || DATA.scenes[0];
+}
+
+function toggleTheme() {
+  document.body.classList.toggle('light');
+  document.getElementById('themeBtn').textContent = document.body.classList.contains('light') ? '🌙 深色' : '☀️ 淺色';
+}
+
+function switchTab(tab) {
+  state.tab = tab;
+  ['sync', 'scenes', 'compare', 'quiz'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('hidden', t !== tab);
+  });
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  if (tab === 'scenes') renderScenes();
+  if (tab === 'compare') renderComparisons();
+  if (tab === 'quiz') {
+    if (!state.currentQuiz) nextQuizQuestion();
+    renderBookmarks();
+  }
+}
+
+function setMaskMode(mode) {
+  state.maskMode = mode;
+  document.querySelectorAll('[data-mask]').forEach(b => b.classList.toggle('active', b.dataset.mask === mode));
+  renderPoints();
+  if (state.tab === 'scenes') renderScenes();
+}
+
+function setFilter(f) {
+  state.filter = f;
+  document.querySelectorAll('[data-filter]').forEach(b => b.classList.toggle('active', b.dataset.filter === f));
+  renderPoints();
+}
+
+function renderJumpAndPages() {
+  document.getElementById('jumpGrid').innerHTML = DATA.points.map(p =>
+    `<button class="jump-btn" id="jump-${p.id}" onclick="jumpToPoint('${p.id}')">${p.id}</button>`
+  ).join('');
+
+  document.getElementById('pageTabs').innerHTML = PAGES.map((pg, idx) =>
+    `<button class="page-tab ${idx === 0 ? 'active' : ''}" data-src="${pg.src}" onclick="selectBookPage('${pg.src}')">${pg.label}</button>`
+  ).join('');
+  updateProgressCount();
+}
+
+function selectBookPage(src) {
+  document.getElementById('bookPreviewImg').src = src;
+  document.querySelectorAll('.page-tab').forEach(b => b.classList.toggle('active', b.dataset.src === src));
+}
+
+function openLightbox(src) {
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+
+function jumpToPoint(pid) {
+  const el = document.getElementById('point-' + pid);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const pt = DATA.points.find(p => p.id === pid);
+  if (pt) {
+    selectBookPage(pt.pageImage);
+    playRange(pt.startTime, pt.endTime, pt.items[0].id, false);
+  }
+}
+
+function updateProgressCount() {
+  document.getElementById('progressCount').textContent = `已熟記 ${state.mastered.length}/34`;
+}
+
+function toggleMastered(pid) {
+  const idx = state.mastered.indexOf(pid);
+  if (idx >= 0) state.mastered.splice(idx, 1);
+  else state.mastered.push(pid);
+  localStorage.setItem('toeic_p2_mastered', JSON.stringify(state.mastered));
+  renderPoints();
+  updateProgressCount();
+}
+
+function toggleBookmark(itemId) {
+  const idx = state.bookmarks.indexOf(itemId);
+  if (idx >= 0) state.bookmarks.splice(idx, 1);
+  else state.bookmarks.push(itemId);
+  localStorage.setItem('toeic_p2_bookmarks', JSON.stringify(state.bookmarks));
+  renderPoints();
+  if (state.tab === 'quiz') renderBookmarks();
+}
+
+function clearBookmarks() {
+  state.bookmarks = [];
+  localStorage.setItem('toeic_p2_bookmarks', '[]');
+  renderBookmarks();
+  renderPoints();
+}
+
+function renderItemRow(it, hideTitle = false) {
+  if (hideTitle && it.isTitle) return '';
+  const sc = getSceneObj(it.sceneId);
+  const maskClass = state.maskMode === 'zh' ? 'masked-zh'
+    : (state.maskMode === 'hideA' ? 'masked-hideA'
+    : (state.maskMode === 'blind' ? 'masked-blind' : ''));
+  const isBm = state.bookmarks.includes(it.id);
+  const isLooping = state.loopRange && state.loopRange.id === it.id;
+
+  const wrongHtml = it.wrongEn ? `
+    <div class="bubble wrong" onclick="if(state.maskMode==='hideA'){event.stopPropagation();this.classList.toggle('revealed');}">
+      <div class="en-line"><span class="qa-tag w">✕ 誤答</span>${formatEnHtml(it.wrongEn, false)}</div>
+      <div class="zh-line" onclick="if(state.maskMode==='zh'){event.stopPropagation();this.classList.toggle('revealed');}">${it.wrongZh}</div>
+    </div>` : '';
+
+  return `
+    <div class="qa-card ${it.isTitle ? 'title-row' : ''} ${state.activeItemId === it.id ? 'active-item' : ''} ${maskClass}"
+         id="row-${it.id}" data-item-id="${it.id}" onclick="playItem('${it.id}')">
+      <div class="item-left">
+        <span class="time-chip">▶ ${fmtTime(it.startTime)}</span>
+        <span class="emoji-box">${it.emoji || '💬'}</span>
+      </div>
+      <div class="qa-body" onclick="if(state.maskMode==='blind'){event.stopPropagation();this.classList.toggle('revealed');}">
+        <div class="bubble q">
+          <div class="en-line"><span class="qa-tag q">Q</span>${formatEnHtml(it.qEn, false)}</div>
+          <div class="zh-line" onclick="if(state.maskMode==='zh'){event.stopPropagation();this.classList.toggle('revealed');}">${it.qZh}</div>
+        </div>
+        ${wrongHtml}
+        <div class="bubble a" onclick="if(state.maskMode==='hideA'){event.stopPropagation();this.classList.toggle('revealed');}">
+          <div class="en-line"><span class="qa-tag a">${it.isTitle ? 'KEY' : 'A'}</span>${formatEnHtml(it.aEn, false)}</div>
+          <div class="zh-line" onclick="if(state.maskMode==='zh'){event.stopPropagation();this.classList.toggle('revealed');}">${it.aZh}</div>
+        </div>
+        ${it.note ? `<div class="note-line" onclick="if(state.maskMode==='hideA'){event.stopPropagation();this.classList.toggle('revealed');}">💡 Note：${it.note}</div>` : ''}
+        <div class="meta-tags">
+          <span class="scene-tag">${sc.emoji} ${sc.shortName}</span>
+          ${it.pointId ? `<span class="scene-tag">#${it.pointId}</span>` : ''}
+        </div>
+      </div>
+      <div class="item-actions" onclick="event.stopPropagation()">
+        ${it.isTitle ? '' : `
+          <button class="icon-btn ${isLooping ? 'active' : ''}" title="單題循環跟讀" onclick="toggleLoopItem('${it.id}')">🔁</button>
+          <button class="icon-btn ${isBm ? 'active' : ''}" title="加入難題標記" onclick="toggleBookmark('${it.id}')">📌</button>
+        `}
+      </div>
+    </div>
+  `;
+}
+
+function renderPoints() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const container = document.getElementById('pointsContainer');
+
+  const filtered = DATA.points.filter(p => {
+    if (state.filter === '90' && p.hitRate < 90) return false;
+    if (state.filter === '80' && (p.hitRate < 80 || p.hitRate > 85)) return false;
+    if (state.filter === '75' && p.hitRate >= 80) return false;
+    if (state.filter === 'trap' && !['001','002','005','010','023','028','034'].includes(p.id)) return false;
+    if (!q) return true;
+    const hay = `${p.id} ${p.title} ${p.titleZh} ${p.rule} ${p.tip} ${p.hitRateText} ${p.items.map(i => `${i.qEn} ${i.qZh} ${i.aEn} ${i.aZh} ${i.note || ''}`).join(' ')}`.toLowerCase();
+    return hay.includes(q);
+  });
+
+  if (!filtered.length) {
+    container.innerHTML = `<div class="panel" style="text-align:center;padding:40px;">找不到符合「${q}」的考點，請試試其他關鍵字！</div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map(p => {
+    const isMastered = state.mastered.includes(p.id);
+    const rateCls = p.hitRate >= 90 ? 'high' : '';
+    const isLoopPt = state.loopRange && state.loopRange.id === ('pt-' + p.id);
+    return `
+      <article class="point-card" id="point-${p.id}">
+        <div class="point-header">
+          <div class="point-title-wrap">
+            <span class="num-badge">${p.id}</span>
+            <h2 class="point-title">${p.title}</h2>
+            <span class="point-title-zh">${p.titleZh}</span>
+            <span class="rate-badge ${rateCls}">${p.hitRateText}</span>
+          </div>
+          <div class="controls-group">
+            <button class="pill-btn" onclick="playRange(${p.startTime}, ${p.endTime}, '${p.items[0].id}', false)">▶ 播整段 (${fmtTime(p.startTime)})</button>
+            <button class="pill-btn ${isLoopPt ? 'active' : ''}" onclick="toggleLoopPoint('${p.id}')">🔁 循環本點</button>
+            <button class="pill-btn ${isMastered ? 'active' : ''}" onclick="toggleMastered('${p.id}')">${isMastered ? '✅ 已熟記' : '⬜ 標記熟記'}</button>
+          </div>
+        </div>
+        <div class="rule-box">${p.rule}</div>
+        <div class="tip-box">💡 <strong>解題心法：</strong>${p.tip}</div>
+        <div class="items-list">
+          ${p.items.map(it => renderItemRow(it, false)).join('')}
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+
+function renderScenes() {
+  document.getElementById('sceneSelectorGrid').innerHTML = DATA.scenes.map(sc => {
+    const count = DATA.timeline.filter(t => !t.isTitle && t.sceneId === sc.id).length;
+    return `
+      <button class="scene-card-btn ${state.activeScene === sc.id ? 'active' : ''}" onclick="state.activeScene='${sc.id}';renderScenes()">
+        <div style="font-size:1.7rem;margin-bottom:4px;">${sc.emoji}</div>
+        <div style="font-weight:800;font-size:0.96rem;">${sc.name}</div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-top:4px;">收錄 ${count} 組實戰問答</div>
+      </button>
+    `;
+  }).join('');
+
+  const sc = getSceneObj(state.activeScene);
+  const sceneItems = DATA.timeline.filter(t => !t.isTitle && t.sceneId === sc.id);
+  const storyHtml = sc.story.map(seg =>
+    `<span class="story-seg" title="點擊播放原音 (${fmtTime(seg.refTime)})" onclick="playFromTime(${seg.refTime})">${seg.text}</span>`
+  ).join('');
+
+  document.getElementById('sceneStageArea').innerHTML = `
+    <div class="scene-hero">
+      <div class="svg-stage">
+        <div class="panel-title"><span>🗺️ ${sc.emoji} ${sc.name} — 對話熱點圖（點擊立即發音）</span></div>
+        ${SCENE_SVGS[sc.id] || ''}
+      </div>
+      <div class="story-box">
+        <div class="panel-title"><span>📖 情境串聯記憶故事（點擊任一段聽原音）</span></div>
+        <p style="font-size:0.86rem;color:var(--muted);margin-top:0;">${sc.desc}</p>
+        <div style="font-size:1rem;line-height:1.9;background:var(--card-2);padding:14px;border-radius:12px;border:1px solid var(--border);">
+          ${storyHtml}
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title"><span>🎯 ${sc.emoji} 本情境實戰 Q&A 句庫（共 ${sceneItems.length} 題）</span></div>
+      <div class="items-list">${sceneItems.map(it => renderItemRow(it, true)).join('')}</div>
+    </div>
+  `;
+}
+
+function renderComparisons() {
+  document.getElementById('compCardsGrid').innerHTML = DATA.comparisons.map(c => `
+    <div class="comp-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+        <span style="font-size:0.78rem;color:var(--blue);font-weight:700;">${c.category}</span>
+        <span class="rate-badge high">${c.badge}</span>
+      </div>
+      <h3 style="margin:6px 0 4px;font-size:1.02rem;">${c.title}</h3>
+      <div class="ab-grid">
+        <div class="ab-box ${c.a.ok ? 'ok' : 'no'}">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <strong style="color:${c.a.ok ? 'var(--green)' : 'var(--red)'};">${c.a.word}</strong>
+            <button class="time-chip" onclick="playFromTime(${c.a.time})">▶ ${fmtTime(c.a.time)}</button>
+          </div>
+          <p style="font-size:0.83rem;margin:6px 0 4px;">${c.a.desc}</p>
+          <div style="font-size:0.8rem;color:var(--muted);">${c.a.example}</div>
+        </div>
+        <div class="ab-box ${c.b.ok ? 'ok' : 'no'}">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <strong style="color:var(--blue);">${c.b.word}</strong>
+            <button class="time-chip" onclick="playFromTime(${c.b.time})">▶ ${fmtTime(c.b.time)}</button>
+          </div>
+          <p style="font-size:0.83rem;margin:6px 0 4px;">${c.b.desc}</p>
+          <div style="font-size:0.8rem;color:var(--muted);">${c.b.example}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  const golden = [
+    ['004', 'but / instead / though', '90%', '語氣轉折或改期替代方案', 76.0],
+    ['006', "I'm not sure. / hasn't been decided yet.", '90%', '不知道、還沒決定萬用神句', 138.5],
+    ['007', 'Let me check / look at schedule', '90%', '查看一下行程、草稿、桌子', 167.5],
+    ['009', 'Why → Because', '90%', 'Why 問句用 Because 直球回答', 240.5],
+    ['016', 'budget（預算）', '90%', '預算削減／先編預算／預算很少', 420.8],
+    ['017', 'already filled / no longer works / out of business', '90%', '讓人感到失落無奈的現實回答', 446.0],
+    ['018', '第三種選擇 / 人名＋解決方案', '90%', '不選 A/B 而問果汁，或找專人處理', 475.5],
+    ['025', 'problem / cancelled / postponed', '90%', '技術問題、活動取消或延後', 649.0],
+    ['011', 'one / The one / One of', '85%', '避免重複問句名詞的代名詞', 282.0],
+    ['019', "I'd be happy to. / glad to. (to 結尾)", '85%', '不定詞 to 結尾省略句', 498.0],
+    ['023', 'sure / OK (避開 mind 回 Yes)', '85%', '答應請求，注意 mind 問句陷阱', 598.5],
+    ['024', 'sorry / very busy', '85%', '禮貌婉拒邀約與理由', 624.2],
+    ['026', 'Oh / Well / Hmm / Okay / Wow', '85%', '口語感嘆詞開頭的自然回答', 679.5],
+    ['030', 'ask（請求／問主管）', '85%', 'Ask the waitress / Let me ask manager', 778.2],
+    ['013', 'bring food from home / mow the lawn', '80%', '不想花錢、自己帶便當婉拒聚餐', 339.2],
+    ['020', 'Not until / until', '80%', '直到⋯才⋯／待到幾點', 535.0],
+    ['021', 'only / just', '80%', '僅只有／才剛發生', 564.0],
+    ['027', 'actually / delayed / still', '80%', '澄清前提／延誤／仍在進行中', 723.5],
+    ['031', 'yet（還沒、尚未）', '80%', '還沒出版／還沒看過行程表', 798.0],
+    ['033', '專有名詞人名（Jay, Nomo, Darren）', '80%', '回答提及特定人名負責', 834.5]
+  ];
+  document.getElementById('goldenKeywordsTable').innerHTML = `
+    <thead><tr><th>編號</th><th>秒殺關鍵字／句型</th><th>正解機率</th><th>核心情境與判斷邏輯</th><th>試聽</th></tr></thead>
+    <tbody>
+      ${golden.map(([id, kw, rate, desc, t]) => `
+        <tr>
+          <td><span class="num-badge" style="font-size:0.75rem;">${id}</span></td>
+          <td><strong style="color:var(--pink);">${kw}</strong></td>
+          <td><span class="rate-badge high">${rate}</span></td>
+          <td>${desc}</td>
+          <td><button class="time-chip" onclick="playFromTime(${t})">▶ ${fmtTime(t)}</button></td>
+        </tr>
+      `).join('')}
+    </tbody>
+  `;
+}
+
+// QUIZ
+function setQuizMode(m) {
+  state.quizMode = m;
+  document.getElementById('qModeResp').classList.toggle('active', m === 'resp');
+  document.getElementById('qModeKw').classList.toggle('active', m === 'keyword');
+  nextQuizQuestion();
+}
+
+function nextQuizQuestion() {
+  const pool = DATA.timeline.filter(t => !t.isTitle && t.aEn.includes('**'));
+  const target = pool[Math.floor(Math.random() * pool.length)];
+  const distractors = [];
+  while (distractors.length < 3) {
+    const cand = pool[Math.floor(Math.random() * pool.length)];
+    if (cand.id !== target.id && !distractors.some(d => d.id === cand.id)) distractors.push(cand);
+  }
+  const options = [target, ...distractors].sort(() => Math.random() - 0.5);
+  state.currentQuiz = { target, options, answered: false };
+  renderQuizArena();
+  playRange(target.startTime, target.endTime, target.id, false);
+}
+
+function renderQuizArena() {
+  const q = state.currentQuiz;
+  if (!q) return;
+  const t = q.target;
+  const maskedA = t.aEn.replace(/\*\*(.+?)\*\*/g, '<span class="kw">[ ______ ]</span>');
+  const extractKw = str => { const m = str.match(/\*\*(.+?)\*\*/); return m ? m[1] : str; };
+
+  document.getElementById('quizArena').innerHTML = `
+    <div style="background:var(--card-2);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:center;">
+      <div style="font-size:2.2rem;margin-bottom:6px;">${state.quizMode === 'resp' ? '🎧❓' : t.emoji}</div>
+      <div style="font-size:1.05rem;font-weight:800;margin-bottom:8px;">
+        ${state.quizMode === 'resp' ? '請聽對話音檔，選出這段 Q&A 的正確應答情境！' : `Q: ${formatEnHtml(t.qEn, false)}<br/>A: ${maskedA}`}
+      </div>
+      ${state.quizMode === 'keyword' ? `<div style="font-size:0.88rem;color:var(--muted);margin-bottom:10px;">中文：${t.aZh}</div>` : ''}
+      <button class="play-main" onclick="playRange(${t.startTime}, ${t.endTime}, '${t.id}', false)">🔊 重播本題音檔 (${fmtTime(t.startTime)})</button>
+    </div>
+    <div class="quiz-options">
+      ${q.options.map((opt, idx) => `
+        <button class="quiz-opt" id="qopt-${idx}" onclick="answerQuiz(${idx})">
+          ${state.quizMode === 'resp'
+            ? `<div style="font-size:0.82rem;color:var(--blue);font-weight:700;">Q: ${opt.qZh}</div><div style="font-weight:800;margin-top:4px;color:var(--green);">A: ${opt.aZh}</div>`
+            : `<div style="font-weight:800;font-size:1.05rem;color:var(--pink);">${extractKw(opt.aEn)}</div>`
+          }
+        </button>
+      `).join('')}
+    </div>
+    <div id="quizFeedback" style="margin-top:14px;"></div>
+  `;
+}
+
+function answerQuiz(idx) {
+  const q = state.currentQuiz;
+  if (!q || q.answered) return;
+  q.answered = true;
+  state.quizTotal++;
+  const ok = q.options[idx].id === q.target.id;
+  if (ok) state.quizScore++;
+
+  q.options.forEach((opt, i) => {
+    const btn = document.getElementById('qopt-' + i);
+    if (opt.id === q.target.id) btn.classList.add('correct');
+    else if (i === idx && !ok) btn.classList.add('wrong');
+  });
+
+  document.getElementById('quizScoreBadge').textContent = `得分 ${state.quizScore} / ${state.quizTotal}`;
+  document.getElementById('quizFeedback').innerHTML = `
+    <div class="rule-box" style="border-left-color:${ok ? 'var(--green)' : 'var(--red)'};">
+      <strong>${ok ? '✅ 答對了！' : '❌ 再聽一次抓關鍵字！'}</strong>
+      <div style="margin-top:4px;">Q: ${formatEnHtml(q.target.qEn, false)} (${q.target.qZh})</div>
+      <div>A: ${formatEnHtml(q.target.aEn, false)} (${q.target.aZh})</div>
+      <div style="color:var(--muted);font-size:0.84rem;margin-top:4px;">💡 ${q.target.note || ''}</div>
+    </div>
+  `;
+}
+
+function renderBookmarks() {
+  const bc = document.getElementById('bookmarksContainer');
+  if (!state.bookmarks.length) {
+    bc.innerHTML = `<p style="color:var(--muted);font-size:0.88rem;margin:0;">尚未標記任何題目。在精讀清單點擊 📌 即可收集容易被騙的陷阱題！</p>`;
+    return;
+  }
+  const items = state.bookmarks.map(id => DATA.timeline.find(t => t.id === id)).filter(Boolean);
+  bc.innerHTML = `<div class="items-list">${items.map(it => renderItemRow(it, true)).join('')}</div>`;
+}
+
+// AUDIO SYNC
+function playFromTime(t) {
+  state.loopRange = null;
+  updateLoopBtn();
+  audio.currentTime = t;
+  audio.play();
+}
+
+function playItem(itemId) {
+  const it = DATA.timeline.find(t => t.id === itemId);
+  if (!it) return;
+  state.loopRange = null;
+  updateLoopBtn();
+  audio.currentTime = it.startTime;
+  audio.play();
+  setActiveItem(it);
+}
+
+function playRange(start, end, itemId = null, loop = false) {
+  state.loopRange = loop ? { start, end, id: itemId } : null;
+  updateLoopBtn();
+  audio.currentTime = start;
+  audio.play();
+  if (itemId) {
+    const it = DATA.timeline.find(t => t.id === itemId);
+    if (it) setActiveItem(it);
+  }
+}
+
+function toggleLoopItem(itemId) {
+  if (state.loopRange && state.loopRange.id === itemId) state.loopRange = null;
+  else {
+    const it = DATA.timeline.find(t => t.id === itemId);
+    if (!it) return;
+    state.loopRange = { start: it.startTime, end: it.endTime, id: it.id };
+    audio.currentTime = it.startTime;
+    audio.play();
+    setActiveItem(it);
+  }
+  updateLoopBtn();
+  renderPoints();
+}
+
+function toggleLoopPoint(pid) {
+  const lid = 'pt-' + pid;
+  if (state.loopRange && state.loopRange.id === lid) state.loopRange = null;
+  else {
+    const pt = DATA.points.find(p => p.id === pid);
+    if (!pt) return;
+    state.loopRange = { start: pt.startTime, end: pt.endTime, id: lid };
+    audio.currentTime = pt.startTime;
+    audio.play();
+  }
+  updateLoopBtn();
+  renderPoints();
+}
+
+function toggleLoopCurrent() {
+  if (state.loopRange) state.loopRange = null;
+  else {
+    const it = DATA.timeline.find(t => t.id === state.activeItemId) || DATA.timeline[1];
+    if (it) state.loopRange = { start: it.startTime, end: it.endTime, id: it.id };
+  }
+  updateLoopBtn();
+  renderPoints();
+}
+
+function updateLoopBtn() {
+  const btn = document.getElementById('loopBtn');
+  btn.textContent = state.loopRange ? '🔁 循環中：開' : '🔁 單題循環：關';
+  btn.classList.toggle('active', !!state.loopRange);
+}
+
+function toggleAutoScroll() {
+  state.autoScroll = !state.autoScroll;
+  const btn = document.getElementById('autoScrollBtn');
+  btn.textContent = state.autoScroll ? '📜 自動跟隨：開' : '📜 自動跟隨：關';
+  btn.classList.toggle('active', state.autoScroll);
+}
+
+function togglePlay() {
+  if (audio.paused) audio.play();
+  else audio.pause();
+}
+
+function setSpeed(spd) {
+  audio.playbackRate = spd;
+  document.querySelectorAll('[data-speed]').forEach(b => b.classList.toggle('active', parseFloat(b.dataset.speed) === spd));
+}
+
+function onSeek(val) { audio.currentTime = parseFloat(val); }
+
+function stepItem(delta) {
+  const idx = DATA.timeline.findIndex(t => t.id === state.activeItemId);
+  const nextIdx = Math.max(0, Math.min(DATA.timeline.length - 1, (idx === -1 ? 0 : idx) + delta));
+  playItem(DATA.timeline[nextIdx].id);
+}
+
+function setActiveItem(it) {
+  if (!it || state.activeItemId === it.id) return;
+  state.activeItemId = it.id;
+
+  document.getElementById('liveEmoji').textContent = it.emoji || '💬';
+  document.getElementById('liveQ').innerHTML = `Q: ${formatEnHtml(it.qEn, false)} <span style="color:var(--muted);font-weight:400;">(${it.qZh})</span>`;
+  document.getElementById('liveA').innerHTML = `A: ${formatEnHtml(it.aEn, false)} <span style="color:var(--muted);">(${it.aZh})</span>`;
+  document.getElementById('livePointBadge').textContent = `${it.pointId}・${it.hitRateText || ''}`;
+
+  document.querySelectorAll('.qa-card.active-item').forEach(el => el.classList.remove('active-item'));
+  const row = document.getElementById('row-' + it.id);
+  if (row) {
+    row.classList.add('active-item');
+    if (state.autoScroll && state.tab === 'sync') row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.querySelectorAll('.point-card.playing-card').forEach(el => el.classList.remove('playing-card'));
+  const card = document.getElementById('point-' + it.pointId);
+  if (card) card.classList.add('playing-card');
+
+  document.querySelectorAll('.jump-btn.active').forEach(el => el.classList.remove('active'));
+  const jb = document.getElementById('jump-' + it.pointId);
+  if (jb) jb.classList.add('active');
+
+  if (it.pageImage) selectBookPage(it.pageImage);
+}
+
+audio.addEventListener('play', () => { document.getElementById('playPauseBtn').textContent = '⏸ 暫停'; });
+audio.addEventListener('pause', () => { document.getElementById('playPauseBtn').textContent = '▶ 播放'; });
+audio.addEventListener('timeupdate', () => {
+  const t = audio.currentTime;
+  document.getElementById('currTimeText').textContent = fmtTime(t);
+  document.getElementById('seekSlider').value = t;
+  if (state.loopRange && t >= state.loopRange.end) { audio.currentTime = state.loopRange.start; return; }
+  const matched = DATA.timeline.find(it => t >= it.startTime && t < it.endTime);
+  if (matched) setActiveItem(matched);
+});
+audio.addEventListener('loadedmetadata', () => {
+  const dur = audio.duration || 888.67;
+  document.getElementById('seekSlider').max = dur;
+  document.getElementById('durTimeText').textContent = fmtTime(dur);
+});
+
+document.addEventListener('keydown', (e) => {
+  if (!document.getElementById('secretGate').classList.contains('hidden')) return;
+  if (e.target.tagName === 'INPUT') return;
+  if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
+  else if (e.code === 'ArrowLeft') { e.preventDefault(); stepItem(-1); }
+  else if (e.code === 'ArrowRight') { e.preventDefault(); stepItem(1); }
+  else if (e.key.toLowerCase() === 'l') { toggleLoopCurrent(); }
+  else if (e.key.toLowerCase() === 'r') {
+    const it = DATA.timeline.find(t => t.id === state.activeItemId);
+    if (it) { audio.currentTime = it.startTime; audio.play(); }
+  }
+});
+
+const SECRET_PASS = 'toeic990';
+const SECRET_STORAGE_KEY = 'toeic_p2_secret_unlocked';
+function initSecretGate() {
+  if (location.protocol === 'file:') return;
+  const params = new URLSearchParams(location.search);
+  if (params.get('key') === SECRET_PASS) { localStorage.setItem(SECRET_STORAGE_KEY, SECRET_PASS); return; }
+  if (localStorage.getItem(SECRET_STORAGE_KEY) === SECRET_PASS) return;
+  document.getElementById('secretGate').classList.remove('hidden');
+}
+function submitSecretKey() {
+  const val = document.getElementById('secretInput').value.trim();
+  if (val === SECRET_PASS) {
+    localStorage.setItem(SECRET_STORAGE_KEY, SECRET_PASS);
+    document.getElementById('secretGate').classList.add('hidden');
+    document.getElementById('secretErr').textContent = '';
+  } else {
+    document.getElementById('secretErr').textContent = '通行碼錯誤，請向分享者索取私密連結或通行碼。';
+  }
+}
+function copyShareLink() {
+  const baseUrl = location.protocol === 'file:' ? 'https://wenny0419.github.io/toeic-part2-study/' : `${location.origin}${location.pathname}`;
+  const shareUrl = `${baseUrl}?key=${SECRET_PASS}`;
+  const btn = document.getElementById('shareBtn');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      btn.textContent = '✅ 已複製私密網址';
+      setTimeout(() => { btn.textContent = '🔗 複製私密網址'; }, 2200);
+    }).catch(() => prompt('請複製以下私密分享網址：', shareUrl));
+  } else {
+    prompt('請複製以下私密分享網址：', shareUrl);
+  }
+}
+
+initSecretGate();
+renderJumpAndPages();
+renderPoints();
+</script>
+</body>
+</html>

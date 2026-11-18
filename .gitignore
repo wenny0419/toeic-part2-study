@@ -1,0 +1,7 @@
+toeic_part2_situational_review.mp4
+_slides/
+slides_concat.txt
+build_data.py
+generate_video.py
+study_data.json
+*.tmp
